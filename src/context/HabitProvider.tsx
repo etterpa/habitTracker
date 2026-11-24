@@ -1,25 +1,21 @@
 import { useState, useEffect} from "react"
 import { type ReactNode } from "react"
-// Import the new database service instead of useLocalStorage
 import { HabitContext, type Habit } from "./useHabits"
-import { getInitialHabits, addHabitToDB, deleteHabitFromDB, toggleCompletionInDB } from "../services/databaseService" 
-// Assuming we move the DB logic to a dedicated service file
+import { getInitialHabits, addHabitToDB, deleteHabitFromDB, toggleCompletionInDB } from "../services/databaseService"
 
 type HabitProviderProps = {
   children: ReactNode
 }
 
 export function HabitProvider({ children }: HabitProviderProps) {
-  // Initialize state by fetching data from the database instead of local storage
   const [habits, setHabits] = useState<Habit[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function initializeData() {
       try {
-        // Fetch initial habits from SQLite
-        const initialHabits = await getInitialHabits(); 
-        setHabits(initialHabits);
+        const initialHabits = await getInitialHabits()
+        setHabits(initialHabits)
       } catch (error) {
         console.error("Failed to load habits from database:", error);
       } finally {
@@ -28,11 +24,7 @@ export function HabitProvider({ children }: HabitProviderProps) {
     }
     initializeData();
 
-    // Cleanup if needed, though DB connections usually persist for the app lifecycle
-  }, []);
-
-
-  // Now all functions must interact with the DB and update state only upon success.
+  }, [])
   const addHabit = async (name: string) => {
     try {
       await addHabitToDB(name);
